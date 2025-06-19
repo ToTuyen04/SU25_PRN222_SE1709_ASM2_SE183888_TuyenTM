@@ -1,0 +1,61 @@
+﻿@page "/OrganizationProgramTuyenTMs/Details/{id:int}"
+@using DrugPrevention.Repositories.TuyenTM.Models
+@inject DrugPrevention.Services.TuyenTM.IServiceProviders _serviceProvider
+@inject NavigationManager Navigation
+
+<h4 class="text-primary">Program Details</h4>
+
+@if (program == null)
+{
+    <div class="loader mt-3"></div>
+}
+else
+{
+    <div class="card mt-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Organization</dt>
+                <dd class="col-sm-9">@program.Organization?.OrganizationName</dd>
+
+                <dt class="col-sm-3">Program</dt>
+                <dd class="col-sm-9">@program.ProgramToanNS?.ProgramName</dd>
+
+                <dt class="col-sm-3">Joined Date</dt>
+                <dd class="col-sm-9">@program.JoinedDate.ToString("dd-MM-yyyy")</dd>
+
+                <dt class="col-sm-3">Last Updated</dt>
+                <dd class="col-sm-9">@program.LastUpdated?.ToString("dd-MM-yyyy")</dd>
+
+                <dt class="col-sm-3">Contribution</dt>
+                <dd class="col-sm-9">@program.ContributionDescription</dd>
+
+                <dt class="col-sm-3">Sponsor?</dt>
+                <dd class="col-sm-9">@((program.IsSponsor == true) ? "Yes" : "No")</dd>
+
+                <dt class="col-sm-3">Organizer?</dt>
+                <dd class="col-sm-9">@((program.IsOrganizer == true) ? "Yes" : "No")</dd>
+
+                <dt class="col-sm-3">Role</dt>
+                <dd class="col-sm-9">@program.ProgramRole</dd>
+
+                <dt class="col-sm-3">Funding</dt>
+                <dd class="col-sm-9">@(program.FundingAmount.HasValue ? $"{program.FundingAmount:C}" : "N/A")</dd>
+
+                <dt class="col-sm-3">Feedback</dt>
+                <dd class="col-sm-9">@program.Feedback</dd>
+            </dl>
+
+
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private OrganizationProgramsTuyenTM program;
+
+    protected override async Task OnInitializedAsync()
+    {
+        program = await _serviceProvider.OrganizationProgramsTuyenTMService.GetByIdAsync(id);
+    }
+}

@@ -1,0 +1,322 @@
+﻿@page "/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMForm"
+@page "/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMForm/{id:int}"
+@using DrugPrevention.Repositories.TuyenTM.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq.Expressions
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>@(IsEditMode ? "Edit Organization Program" : "Create Organization Program")</PageTitle>
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+
+            <!-- Header Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-building me-2"></i>
+                        <h4 class="mb-0">@(IsEditMode ? "Edit Organization Program" : "Create New Organization Program")</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Form Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <EditForm Model="organizationProgram" OnValidSubmit="HandleValidSubmit" class="needs-validation" novalidate>
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="alert alert-danger" />
+
+                        <!-- Basic Information Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom pb-2 mb-3">
+                                    <i class="fas fa-info-circle me-2"></i>Basic Information
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    Organization <span class="text-danger">*</span>
+                                </label>
+                                <InputSelect @bind-Value="organizationProgram.OrganizationID"
+                                           class="form-select @(GetValidationClass(() => organizationProgram.OrganizationID))"
+                                           required>
+                                    <option value="">-- Select Organization --</option>
+                                    @foreach (var org in organizations)
+                                    {
+                                        <option value="@org.OrganizationTuyenTMID">@org.OrganizationName</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => organizationProgram.OrganizationID)" class="invalid-feedback d-block" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    Program <span class="text-danger">*</span>
+                                </label>
+                                <InputSelect @bind-Value="organizationProgram.ProgramToanNSID"
+                                           class="form-select @(GetValidationClass(() => organizationProgram.ProgramToanNSID))"
+                                           required>
+                                    <option value="">-- Select Program --</option>
+                                    @foreach (var program in programs)
+                                    {
+                                        <option value="@program.ProgramToanNSID">@program.ProgramName</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => organizationProgram.ProgramToanNSID)" class="invalid-feedback d-block" />
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    Joined Date <span class="text-danger">*</span>
+                                </label>
+                                <InputDate @bind-Value="organizationProgram.JoinedDate"
+                                         class="form-control @(GetValidationClass(() => organizationProgram.JoinedDate))"
+                                         required />
+                                <ValidationMessage For="@(() => organizationProgram.JoinedDate)" class="invalid-feedback d-block" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Funding Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <InputNumber @bind-Value="organizationProgram.FundingAmount"
+                                               class="form-control @(GetValidationClass(() => organizationProgram.FundingAmount))"
+                                               placeholder="0.00"
+                                               step="0.01" />
+                                </div>
+                                <ValidationMessage For="@(() => organizationProgram.FundingAmount)" class="invalid-feedback d-block" />
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Program Role</label>
+                                <InputText @bind-Value="organizationProgram.ProgramRole"
+                                         class="form-control @(GetValidationClass(() => organizationProgram.ProgramRole))"
+                                         placeholder="e.g., Sponsor, Organizer, Partner..." />
+                                <ValidationMessage For="@(() => organizationProgram.ProgramRole)" class="invalid-feedback d-block" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Feedback</label>
+                                <InputTextArea @bind-Value="organizationProgram.Feedback"
+                                             class="form-control @(GetValidationClass(() => organizationProgram.Feedback))"
+                                             rows="3"
+                                             placeholder="Any feedback or notes..." />
+                                <ValidationMessage For="@(() => organizationProgram.Feedback)" class="invalid-feedback d-block" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">
+                                    Contribution Description <span class="text-danger">*</span>
+                                </label>
+                                <InputTextArea @bind-Value="organizationProgram.ContributionDescription"
+                                             class="form-control @(GetValidationClass(() => organizationProgram.ContributionDescription))"
+                                             rows="4"
+                                             placeholder="Describe the organization's contribution to the program..."
+                                             required />
+                                <ValidationMessage For="@(() => organizationProgram.ContributionDescription)" class="invalid-feedback d-block" />
+                            </div>
+                        </div>
+
+                        <!-- Role & Status Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom pb-2 mb-3">
+                                    <i class="fas fa-user-tag me-2"></i>Role & Status
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body p-3">
+                                        <div class="form-check form-switch">
+                                            <InputCheckbox @bind-Value="IsSponsorValue"
+                                                         class="form-check-input"
+                                                         id="isSponsor" />
+                                            <label class="form-check-label fw-bold" for="isSponsor">
+                                                <i class="fas fa-hand-holding-usd me-2 text-success"></i>Is Sponsor
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Organization provides financial support</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body p-3">
+                                        <div class="form-check form-switch">
+                                            <InputCheckbox @bind-Value="IsOrganizerValue"
+                                                         class="form-check-input"
+                                                         id="isOrganizer" />
+                                            <label class="form-check-label fw-bold" for="isOrganizer">
+                                                <i class="fas fa-users-cog me-2 text-primary"></i>Is Organizer
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Organization manages program activities</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button type="button"
+                                            class="btn btn-outline-secondary"
+                                            @onclick="Cancel"
+                                            disabled="@isSubmitting">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </button>
+
+                                    <button type="submit"
+                                            class="btn @(IsEditMode ? "btn-warning" : "btn-success")"
+                                            disabled="@isSubmitting">
+                                        @if (isSubmitting)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                            <span>Saving...</span>
+                                        }
+                                        else if (IsEditMode)
+                                        {
+                                            <i class="fas fa-save me-2"></i>
+                                            <span>Update Program</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-plus me-2"></i>
+                                            <span>Create Program</span>
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error Message -->
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <div>@errorMessage</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int? id { get; set; }
+    private OrganizationProgramsTuyenTM organizationProgram = new();
+    private List<CommunityProgramsToanN> programs = new();
+    private List<OrganizationsTuyenTM> organizations = new();
+    private bool isSubmitting = false;
+    private string? errorMessage;
+    private bool IsEditMode => id.HasValue && id.Value > 0;
+
+    // Helper properties for nullable boolean binding
+    private bool IsSponsorValue
+    {
+        get => organizationProgram.IsSponsor ?? false;
+        set => organizationProgram.IsSponsor = value;
+    }
+
+    private bool IsOrganizerValue
+    {
+        get => organizationProgram.IsOrganizer ?? false;
+        set => organizationProgram.IsOrganizer = value;
+    }
+
+    // Helper method for Bootstrap validation classes
+    private string GetValidationClass<T>(Expression<Func<T>> accessor)
+    {
+        return "";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        programs = await _serviceProviders.CommunityProgramToanNSService.GetAllAsync();
+        organizations = await _serviceProviders.OrganizationsTuyenTMService.GetAllAsync();
+
+        if (IsEditMode)
+        {
+            var existing = await _serviceProviders.OrganizationProgramsTuyenTMService.GetByIdAsync(id!.Value);
+            if (existing != null)
+            {
+                organizationProgram = existing;
+            }
+            else
+            {
+                navigationManager.NavigateTo("/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMList");
+                return;
+            }
+        }
+        else
+        {
+            organizationProgram = new OrganizationProgramsTuyenTM
+                {
+                    JoinedDate = DateTime.Today
+                };
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        errorMessage = null;
+
+        try
+        {
+            organizationProgram.LastUpdated = DateTime.Now;
+
+            int result = IsEditMode
+                ? await _serviceProviders.OrganizationProgramsTuyenTMService.UpdateAsync(organizationProgram)
+                : await _serviceProviders.OrganizationProgramsTuyenTMService.AddAsync(organizationProgram);
+
+            if (result > 0)
+            {
+                navigationManager.NavigateTo("/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMList");
+            }
+            else
+            {
+                errorMessage = "Failed to save program.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private void Cancel()
+    {
+        navigationManager.NavigateTo("/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMList");
+    }
+}
