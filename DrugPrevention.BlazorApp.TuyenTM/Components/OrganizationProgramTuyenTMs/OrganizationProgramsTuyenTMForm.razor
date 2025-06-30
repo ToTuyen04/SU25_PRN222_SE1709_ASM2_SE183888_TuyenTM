@@ -1,9 +1,9 @@
 ﻿@page "/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMForm"
 @page "/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMForm/{id:int}"
 @using DrugPrevention.Repositories.TuyenTM.Models
+@using System.Linq.Expressions
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
-@using System.Linq.Expressions
 @attribute [StreamRendering]
 @rendermode InteractiveServer
 
@@ -45,7 +45,7 @@
                                     Organization <span class="text-danger">*</span>
                                 </label>
                                 <InputSelect @bind-Value="organizationProgram.OrganizationID"
-                                           class="form-select @(GetValidationClass(() => organizationProgram.OrganizationID))"
+                                           class="form-select"
                                            required>
                                     <option value="">-- Select Organization --</option>
                                     @foreach (var org in organizations)
@@ -61,7 +61,7 @@
                                     Program <span class="text-danger">*</span>
                                 </label>
                                 <InputSelect @bind-Value="organizationProgram.ProgramToanNSID"
-                                           class="form-select @(GetValidationClass(() => organizationProgram.ProgramToanNSID))"
+                                           class="form-select"
                                            required>
                                     <option value="">-- Select Program --</option>
                                     @foreach (var program in programs)
@@ -79,7 +79,7 @@
                                     Joined Date <span class="text-danger">*</span>
                                 </label>
                                 <InputDate @bind-Value="organizationProgram.JoinedDate"
-                                         class="form-control @(GetValidationClass(() => organizationProgram.JoinedDate))"
+                                         class="form-control"
                                          required />
                                 <ValidationMessage For="@(() => organizationProgram.JoinedDate)" class="invalid-feedback d-block" />
                             </div>
@@ -89,7 +89,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <InputNumber @bind-Value="organizationProgram.FundingAmount"
-                                               class="form-control @(GetValidationClass(() => organizationProgram.FundingAmount))"
+                                               class="form-control"
                                                placeholder="0.00"
                                                step="0.01" />
                                 </div>
@@ -101,7 +101,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Program Role</label>
                                 <InputText @bind-Value="organizationProgram.ProgramRole"
-                                         class="form-control @(GetValidationClass(() => organizationProgram.ProgramRole))"
+                                         class="form-control"
                                          placeholder="e.g., Sponsor, Organizer, Partner..." />
                                 <ValidationMessage For="@(() => organizationProgram.ProgramRole)" class="invalid-feedback d-block" />
                             </div>
@@ -109,7 +109,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Feedback</label>
                                 <InputTextArea @bind-Value="organizationProgram.Feedback"
-                                             class="form-control @(GetValidationClass(() => organizationProgram.Feedback))"
+                                             class="form-control"
                                              rows="3"
                                              placeholder="Any feedback or notes..." />
                                 <ValidationMessage For="@(() => organizationProgram.Feedback)" class="invalid-feedback d-block" />
@@ -122,7 +122,7 @@
                                     Contribution Description <span class="text-danger">*</span>
                                 </label>
                                 <InputTextArea @bind-Value="organizationProgram.ContributionDescription"
-                                             class="form-control @(GetValidationClass(() => organizationProgram.ContributionDescription))"
+                                             class="form-control"
                                              rows="4"
                                              placeholder="Describe the organization's contribution to the program..."
                                              required />
@@ -249,11 +249,7 @@
         set => organizationProgram.IsOrganizer = value;
     }
 
-    // Helper method for Bootstrap validation classes
-    private string GetValidationClass<T>(Expression<Func<T>> accessor)
-    {
-        return "";
-    }
+
 
     protected override async Task OnInitializedAsync()
     {
