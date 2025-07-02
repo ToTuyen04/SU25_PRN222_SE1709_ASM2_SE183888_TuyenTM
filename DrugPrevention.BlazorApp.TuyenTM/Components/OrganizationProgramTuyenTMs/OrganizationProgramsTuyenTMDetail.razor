@@ -71,7 +71,7 @@
                         <label class="form-label fw-bold">Funding Amount</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input type="number" class="form-control" value="@program.FundingAmount" readonly />
+                            <input type="text" class="form-control" value="@(program.FundingAmount?.ToString("F2") ?? "")" readonly />
                         </div>
                     </div>
 
