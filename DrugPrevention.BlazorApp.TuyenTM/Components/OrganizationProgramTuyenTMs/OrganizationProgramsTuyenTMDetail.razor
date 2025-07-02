@@ -2,53 +2,120 @@
 @using DrugPrevention.Repositories.TuyenTM.Models
 @inject DrugPrevention.Services.TuyenTM.IServiceProviders _serviceProvider
 @inject NavigationManager Navigation
+@attribute [StreamRendering]
 
-<h4 class="text-primary">Program Details</h4>
-
-@if (program == null)
-{
-    <div class="loader mt-3"></div>
-}
-else
-{
-    <div class="card mt-3">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Organization</dt>
-                <dd class="col-sm-9">@program.Organization?.OrganizationName</dd>
-
-                <dt class="col-sm-3">Program</dt>
-                <dd class="col-sm-9">@program.ProgramToanNS?.ProgramName</dd>
-
-                <dt class="col-sm-3">Joined Date</dt>
-                <dd class="col-sm-9">@program.JoinedDate.ToString("dd-MM-yyyy")</dd>
-
-                <dt class="col-sm-3">Last Updated</dt>
-                <dd class="col-sm-9">@program.LastUpdated?.ToString("dd-MM-yyyy")</dd>
-
-                <dt class="col-sm-3">Contribution</dt>
-                <dd class="col-sm-9">@program.ContributionDescription</dd>
-
-                <dt class="col-sm-3">Sponsor?</dt>
-                <dd class="col-sm-9">@((program.IsSponsor == true) ? "Yes" : "No")</dd>
-
-                <dt class="col-sm-3">Organizer?</dt>
-                <dd class="col-sm-9">@((program.IsOrganizer == true) ? "Yes" : "No")</dd>
-
-                <dt class="col-sm-3">Role</dt>
-                <dd class="col-sm-9">@program.ProgramRole</dd>
-
-                <dt class="col-sm-3">Funding</dt>
-                <dd class="col-sm-9">@(program.FundingAmount.HasValue ? $"{program.FundingAmount:C}" : "N/A")</dd>
-
-                <dt class="col-sm-3">Feedback</dt>
-                <dd class="col-sm-9">@program.Feedback</dd>
-            </dl>
-
-
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary mb-0">
+            <i class="bi bi-info-circle-fill me-2"></i>Program Details
+        </h2>
+        <div>
+            <a href="/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMForm/@id" class="btn btn-warning me-2">
+                <i class="bi bi-pencil-fill me-1"></i>Edit
+            </a>
+            <a href="/OrganizationProgramTuyenTMs/OrganizationProgramsTuyenTMList" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to List
+            </a>
         </div>
     </div>
-}
+
+    @if (program == null)
+    {
+        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-building me-2"></i>Organization Program Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">
+                            Organization <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" value="@program.Organization?.OrganizationName" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">
+                            Program <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" value="@program.ProgramToanNS?.ProgramName" readonly />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">
+                            Joined Date <span class="text-danger">*</span>
+                        </label>
+                        <input type="date" class="form-control" value="@program.JoinedDate.ToString("yyyy-MM-dd")" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Last Updated</label>
+                        <input type="date" class="form-control" value="@(program.LastUpdated?.ToString("yyyy-MM-dd"))" readonly />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Funding Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" value="@program.FundingAmount" readonly />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Program Role</label>
+                        <input type="text" class="form-control" value="@program.ProgramRole" readonly />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Feedback</label>
+                        <textarea class="form-control" rows="3" readonly>@program.Feedback</textarea>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Contribution Description</label>
+                        <textarea class="form-control" rows="3" readonly>@program.ContributionDescription</textarea>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked="@program.IsSponsor" disabled />
+                            <label class="form-check-label fw-bold">
+                                Is Sponsor
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" checked="@program.IsOrganizer" disabled />
+                            <label class="form-check-label fw-bold">
+                                Is Organizer
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     [Parameter] public int id { get; set; }

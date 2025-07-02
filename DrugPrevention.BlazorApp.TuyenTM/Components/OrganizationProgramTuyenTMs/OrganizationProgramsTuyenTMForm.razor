@@ -78,24 +78,65 @@
                                 <label class="form-label fw-bold">
                                     Joined Date <span class="text-danger">*</span>
                                 </label>
-                                <InputDate @bind-Value="organizationProgram.JoinedDate"
-                                         class="form-control"
-                                         required />
+                                @if (IsEditMode)
+                                {
+                                    <InputDate @bind-Value="organizationProgram.JoinedDate"
+                                             class="form-control"
+                                             disabled="true" />
+                                }
+                                else
+                                {
+                                    <InputDate @bind-Value="organizationProgram.JoinedDate"
+                                             class="form-control"
+                                             required />
+                                }
                                 <ValidationMessage For="@(() => organizationProgram.JoinedDate)" class="invalid-feedback d-block" />
                             </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Funding Amount</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">$</span>
-                                    <InputNumber @bind-Value="organizationProgram.FundingAmount"
-                                               class="form-control"
-                                               placeholder="0.00"
-                                               step="0.01" />
+                            @if (IsEditMode)
+                            {
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Last Updated</label>
+                                    <InputDate @bind-Value="organizationProgram.LastUpdated"
+                                             class="form-control"
+                                             disabled="true" />
                                 </div>
-                                <ValidationMessage For="@(() => organizationProgram.FundingAmount)" class="invalid-feedback d-block" />
-                            </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Funding Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <InputNumber @bind-Value="organizationProgram.FundingAmount"
+                                                   class="form-control"
+                                                   placeholder="0.00"
+                                                   step="0.01" />
+                                    </div>
+                                    <ValidationMessage For="@(() => organizationProgram.FundingAmount)" class="invalid-feedback d-block" />
+                                </div>
+                            }
                         </div>
+
+                        @if (IsEditMode)
+                        {
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Funding Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <InputNumber @bind-Value="organizationProgram.FundingAmount"
+                                                   class="form-control"
+                                                   placeholder="0.00"
+                                                   step="0.01" />
+                                    </div>
+                                    <ValidationMessage For="@(() => organizationProgram.FundingAmount)" class="invalid-feedback d-block" />
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- Empty column for spacing -->
+                                </div>
+                            </div>
+                        }
 
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
@@ -313,6 +354,6 @@
 
     private void Cancel()
     {
-        navigationManager.NavigateTo("/OrganizationProgramTuyenTMs/OrganizationProgramTuyenTMList");
+        navigationManager.NavigateTo("/OrganizationProgramTuyenTMs/OrganizationProgramsTuyenTMList");
     }
 }
