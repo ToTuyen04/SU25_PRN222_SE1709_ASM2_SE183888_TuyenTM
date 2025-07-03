@@ -14,4 +14,8 @@
     <ProjectReference Include="..\DrugPrevention.Services.TuyenTM\DrugPrevention.Services.TuyenTM.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\Account\" />
+  </ItemGroup>
+
 </Project>

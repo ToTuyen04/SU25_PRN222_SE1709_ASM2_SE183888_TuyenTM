@@ -14,7 +14,7 @@
 
     <div class="input-group mb-3">
         <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <input class="form-control" @bind="searchTerm" @bind:event="oninput" placeholder="Search by organization or program name..." />
+        <input class="form-control" @bind="searchTerm" @bind:event="oninput" @bind:after="OnSearchChanged" placeholder="Search by organization or program name..." />
     </div>
 
     @if (organizationProgramsTuyenTMList == null)
@@ -66,7 +66,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in filteredList)
+                    @foreach (var item in paginatedList)
                     {
                         <tr>
                             <td>@item.OrganizationProgramTuyenTMID</td>
@@ -115,12 +115,55 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
+        @if (totalPages > 1)
+        {
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted">
+                    Showing @((currentPage - 1) * pageSize + 1) to @(Math.Min(currentPage * pageSize, totalItems)) of @totalItems entries
+                </div>
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0">
+                        <!-- Previous Button -->
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <button class="page-link" @onclick="() => GoToPage(currentPage - 1)" disabled="@(currentPage == 1)">
+                                <i class="bi bi-chevron-left"></i> Previous
+                            </button>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        @for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
+                        {
+                            int pageNumber = i;
+                            <li class="page-item @(currentPage == pageNumber ? "active" : "")">
+                                <button class="page-link" @onclick="() => GoToPage(pageNumber)">
+                                    @pageNumber
+                                </button>
+                            </li>
+                        }
+
+                        <!-- Next Button -->
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <button class="page-link" @onclick="() => GoToPage(currentPage + 1)" disabled="@(currentPage == totalPages)">
+                                Next <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
     }
 </div>
 
 @code {
     private List<OrganizationProgramsTuyenTM>? organizationProgramsTuyenTMList;
     private string searchTerm = string.Empty;
+
+    // Pagination properties
+    private int currentPage = 1;
+    private int pageSize = 5;
 
     private List<OrganizationProgramsTuyenTM> filteredList =>
         organizationProgramsTuyenTMList == null ? new List<OrganizationProgramsTuyenTM>() :
@@ -131,9 +174,30 @@
             || x.ProgramToanNS?.ProgramName?.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true
         ).ToList();
 
+    private List<OrganizationProgramsTuyenTM> paginatedList =>
+        filteredList.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+    private int totalPages => (int)Math.Ceiling((double)filteredList.Count / pageSize);
+    private int totalItems => filteredList.Count;
+
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(1000);
         organizationProgramsTuyenTMList = await _serviceProviders.OrganizationProgramsTuyenTMService.GetAllAsync();
+    }
+
+    private void GoToPage(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+            StateHasChanged();
+        }
+    }
+
+    private void OnSearchChanged()
+    {
+        currentPage = 1; // Reset to first page when searching
+        StateHasChanged();
     }
 }
