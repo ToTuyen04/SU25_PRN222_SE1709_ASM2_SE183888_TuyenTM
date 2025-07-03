@@ -53,13 +53,6 @@ namespace DrugPrevention.Repositories.TuyenTM.Basic
 
         public async Task<int> UpdateAsync(T entity)
         {
-            //// Turning off Tracking for UpdateAsync in Entity Framework
-            _context.ChangeTracker.Clear();
-            var tracker = _context.Attach(entity);
-            tracker.State = EntityState.Modified;
-            return await _context.SaveChangesAsync();
-
-            /*
             try
             {
                 // Get primary key dynamically
@@ -84,9 +77,12 @@ namespace DrugPrevention.Repositories.TuyenTM.Basic
             }
             catch (Exception ex)
             {
-                return 0;
-            }           
-             */
+                // Fallback to original method if there's an issue
+                _context.ChangeTracker.Clear();
+                var tracker = _context.Attach(entity);
+                tracker.State = EntityState.Modified;
+                return await _context.SaveChangesAsync();
+            }
         }
 
         public bool Remove(T entity)
