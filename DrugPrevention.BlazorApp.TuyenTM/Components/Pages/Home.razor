@@ -1,7 +1,79 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center bg-primary text-white p-3 rounded">
+                <div>
+                    <h2 class="mb-0">
+                        <i class="bi bi-house-door-fill me-2"></i>
+                        Drug Prevention System
+                    </h2>
+                </div>
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">
+                                <i class="bi bi-person-circle me-1"></i>
+                                Welcome, <strong>@context.User.Identity?.Name</strong>
+                            </span>
+                            <a href="/Account/Logout" class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-box-arrow-right me-1"></i> Logout
+                            </a>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
 
-Welcome to your new app.
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h4><i class="bi bi-info-circle-fill me-2"></i>System Overview</h4>
+                <p>This is the Drug Prevention Management System. Use the navigation menu to access different modules:</p>
+                <ul class="mb-0">
+                    <li><strong>Organization Program Management</strong> - Manage organization programs and activities</li>
+                    <li><strong>Counter</strong> - Sample counter page for testing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-diagram-3-fill text-primary me-2"></i>
+                        Organization Programs
+                    </h5>
+                    <p class="card-text">Manage and track organization programs, activities, and their effectiveness.</p>
+                    <a href="/OrganizationProgramTuyenTMs/OrganizationProgramsTuyenTMList" class="btn btn-primary">
+                        <i class="bi bi-arrow-right-circle me-1"></i> Go to Programs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-plus-square-fill text-success me-2"></i>
+                        Counter Demo
+                    </h5>
+                    <p class="card-text">A simple counter demonstration for testing interactive components.</p>
+                    <a href="/counter" class="btn btn-success">
+                        <i class="bi bi-arrow-right-circle me-1"></i> Go to Counter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

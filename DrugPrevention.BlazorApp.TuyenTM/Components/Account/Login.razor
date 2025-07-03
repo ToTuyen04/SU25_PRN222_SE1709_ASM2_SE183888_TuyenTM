@@ -1,10 +1,13 @@
 ﻿@page "/Account/Login"
-@using DNATesting.Repositories.HauHN.Models
+@using DrugPrevention.Repositories.TuyenTM.Models
+@using DrugPrevention.Services.TuyenTM
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
+@inject IServiceProviders _serviceProviders
+@inject IJSRuntime runtimeJS
 
-<h3 class="text-danger flex-lg-wrap text-center ">Blood Donation System</h3>
+<h3 class="text-danger flex-lg-wrap text-center ">Drug Prevention System</h3>
 
 <div class="container mt-4">
     <div class="row justify-content-center">
@@ -38,23 +41,21 @@
 
 
 @code {
-    private SystemUserAccount? systemUserAccount;
+    private System_UserAccount? systemUserAccount;
     private LoginModel loginModel { get; set; } = new LoginModel();
     private string? errorMessage;
 
-    // userAccount se =  await _serviceProviders.SystemUserAccountService.CheckLogin(UserName, Password);)
-
     private async Task HandleLogin()
     {
-        var userAccount = await ServiceProviders.systemUserAccountService.GetUserAccountAsync(loginModel.UserName, loginModel.Password);
+        var userAccount = await _serviceProviders.System_UserAccountService.GetUserAccount(loginModel.UserName, loginModel.Password);
 
-        if (userAccount != null)
+        if (userAccount != null && userAccount.UserAccountID > 0 && userAccount.IsActive)
         {
             await runtimeJS.InvokeVoidAsync("eval", $"window.location.href = '/Account/RedirectLogin/{loginModel.UserName}'");
         }
         else
         {
-            errorMessage = "Invalid password or username, try again!";
+            errorMessage = "Invalid password or username, or account is inactive!";
         }
     }
 

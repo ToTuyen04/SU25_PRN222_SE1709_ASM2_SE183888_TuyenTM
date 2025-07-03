@@ -1,7 +1,9 @@
 ﻿@page "/OrganizationProgramTuyenTMs/Details/{id:int}"
 @using DrugPrevention.Repositories.TuyenTM.Models
+@using Microsoft.AspNetCore.Authorization
 @inject DrugPrevention.Services.TuyenTM.IServiceProviders _serviceProvider
 @inject NavigationManager Navigation
+@attribute [Authorize]
 @attribute [StreamRendering]
 
 <div class="container mt-4">

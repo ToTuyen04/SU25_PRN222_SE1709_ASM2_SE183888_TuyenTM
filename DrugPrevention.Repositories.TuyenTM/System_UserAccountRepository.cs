@@ -28,5 +28,27 @@ namespace DrugPrevention.Repositories.TuyenTM
             return user ?? new System_UserAccount();
         }
 
+        public async Task<System_UserAccount> GetUserAccountByUserNameAsync(string username)
+        {
+            var user = await _context.System_UserAccounts
+                .FirstOrDefaultAsync(u => u.UserName == username && u.IsActive);
+            return user ?? new System_UserAccount();
+        }
+
+        public async Task<List<System_UserAccount>> GetAllAsync()
+        {
+            var userList = await _context.System_UserAccounts
+                .Where(u => u.IsActive)
+                .ToListAsync();
+            return userList ?? new List<System_UserAccount>();
+        }
+
+        public async Task<System_UserAccount> GetByIdAsync(int id)
+        {
+            var user = await _context.System_UserAccounts
+                .FirstOrDefaultAsync(u => u.UserAccountID == id);
+            return user ?? new System_UserAccount();
+        }
+
     }
 }

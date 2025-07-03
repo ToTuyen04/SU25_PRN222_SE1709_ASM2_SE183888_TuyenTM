@@ -4,15 +4,14 @@
 @using Microsoft.AspNetCore.Authentication.Cookies
 @using Microsoft.AspNetCore.Http
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
 
 @code {
     protected override async Task OnInitializedAsync()
     {
         // Sign out the user
-        await HttpContextAccessor.HttpContext.SignOutAsync();
+        await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         // Redirect to the login page
-        HttpContextAccessor.HttpContext.Response.Redirect("/Account/Login");
-	}
+        Navigation.NavigateTo("/Account/Login", forceLoad: true);
+    }
 }

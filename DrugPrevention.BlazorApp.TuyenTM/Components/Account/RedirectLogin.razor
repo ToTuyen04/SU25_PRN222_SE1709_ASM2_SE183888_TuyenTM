@@ -1,8 +1,12 @@
 ﻿@page "/Account/RedirectLogin/{username}"
+@using DrugPrevention.Repositories.TuyenTM.Models
+@using DrugPrevention.Services.TuyenTM
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authentication.Cookies
-@inject IHttpContextAccessor HttpContextAccessor
 @using Microsoft.AspNetCore.Authentication
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IServiceProviders _serviceProviders
+@inject NavigationManager navigationManager
 
 
 @code {
@@ -17,13 +21,16 @@
             return;
         }
 
-        var user = await ServiceProviders.systemUserAccountService.GetUserAccountByUserNameAsync(Username);
-        if (user != null)
+        var user = await _serviceProviders.System_UserAccountService.GetUserAccountByUserNameAsync(Username);
+        if (user != null && user.UserAccountID > 0 && user.IsActive)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                new Claim("FullName", user.FullName ?? user.UserName),
+                new Claim("Email", user.Email ?? ""),
+                new Claim("UserAccountID", user.UserAccountID.ToString())
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -38,7 +45,8 @@
                     ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1)
                 });
 
-            navigationManager.NavigateTo("/TestResultHauHNs/TestResultHauHnList", forceLoad: true);
+            // Navigate to the main page
+            navigationManager.NavigateTo("/OrganizationProgramTuyenTMs/OrganizationProgramsTuyenTMList", forceLoad: true);
         }
         else
         {
