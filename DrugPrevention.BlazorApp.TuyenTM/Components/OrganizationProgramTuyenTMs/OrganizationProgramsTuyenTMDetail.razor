@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject DrugPrevention.Services.TuyenTM.IServiceProviders _serviceProvider
 @inject NavigationManager Navigation
-@attribute [Authorize]
+@attribute [Authorize(Roles = "1,2")]
 @attribute [StreamRendering]
 
 <div class="container mt-4">
