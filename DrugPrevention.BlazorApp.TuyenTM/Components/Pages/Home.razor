@@ -22,9 +22,9 @@
                                 <i class="bi bi-person-circle me-1"></i>
                                 Welcome, <strong>@context.User.Identity?.Name</strong>
                             </span>
-                            <a href="/Account/Logout" class="btn btn-outline-light btn-sm">
+                            <button @onclick="HandleLogout" class="btn btn-outline-light btn-sm">
                                 <i class="bi bi-box-arrow-right me-1"></i> Logout
-                            </a>
+                            </button>
                         </div>
                     </Authorized>
                 </AuthorizeView>
@@ -77,3 +77,11 @@
         </div>
     </div>
 </div>
+
+@code {
+    private async Task HandleLogout()
+    {
+        // Navigate to logout page which will handle the sign out and redirect
+        navigationManager.NavigateTo("/Account/Logout", forceLoad: true);
+    }
+}

@@ -9,9 +9,22 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        // Sign out the user
-        await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        // Redirect to the login page
-        Navigation.NavigateTo("/Account/Login", forceLoad: true);
+        try
+        {
+            // Sign out the user
+            await HttpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Clear any cached data
+            await Task.Delay(100); // Small delay to ensure sign out completes
+
+            // Redirect to the login page
+            Navigation.NavigateTo("/Account/Login", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            // If there's an error, still redirect to login
+            Console.WriteLine($"Logout error: {ex.Message}");
+            Navigation.NavigateTo("/Account/Login", forceLoad: true);
+        }
     }
 }
